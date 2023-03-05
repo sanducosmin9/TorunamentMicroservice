@@ -1,11 +1,9 @@
 package tournament.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -15,6 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class TournamentUser {
 
     @Id
@@ -35,4 +34,8 @@ public class TournamentUser {
 
     @Column(name = "ROLE")
     private UserRole role;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties
+    private List<Token> tokens;
 }

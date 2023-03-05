@@ -3,6 +3,8 @@ package tournament.util;
 import tournament.dto.TournamentUserDto;
 import tournament.model.TournamentUser;
 
+import java.util.ArrayList;
+
 public class TournamentUserMapper {
     public static  TournamentUserDto mapToTournamentUserDto(TournamentUser tournamentUser) {
         return TournamentUserDto.builder()
@@ -20,7 +22,8 @@ public class TournamentUserMapper {
                 tournamentUserDto.getUsername(),
                 tournamentUserDto.getPassword(),
                 tournamentUserDto.getTournaments(),
-                tournamentUserDto.getRole()
+                tournamentUserDto.getRole(),
+                new ArrayList<>()
         );
     }
 }
