@@ -27,7 +27,7 @@ public class SecurityConfig {
             .csrf()
             .disable()
             .authorizeHttpRequests()
-            .requestMatchers("/auth/**", "/tournament")
+            .requestMatchers("/auth/**", "/tournament/**")
             .permitAll()
             .anyRequest()
             .authenticated()
@@ -37,6 +37,8 @@ public class SecurityConfig {
             .and()
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.headers().frameOptions().sameOrigin();
 
         return http.build();
     }

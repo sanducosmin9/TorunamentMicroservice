@@ -1,19 +1,19 @@
 package tournament.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Table(name = "TOURNAMENT")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 public class Tournament {
     @Id
@@ -30,6 +30,13 @@ public class Tournament {
     @Column(name = "NAME")
     private String name;
 
+    @Column(name = "SIZE")
+    private int size;
+
     @Column(name = "CREATION_DATE")
     private LocalDateTime creationDate;
+
+    @OneToMany(mappedBy = "tournament")
+    @JsonManagedReference
+    private List<Matchup> matchups;
 }

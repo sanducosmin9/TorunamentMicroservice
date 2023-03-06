@@ -1,5 +1,6 @@
 package tournament.service;
 
+import jakarta.servlet.http.Cookie;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,11 +19,14 @@ import tournament.model.Token;
 import tournament.repository.TokenRepository;
 import tournament.model.TokenType;
 
+import java.time.Duration;
 import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+
+    public final String COOKIE_NAME = "auth_by_cookie";
 
     private final TournamentUserRepository userRepository;
 
@@ -91,5 +95,14 @@ public class AuthenticationService {
             }
         );
         tokenRepository.saveAll(validUserTokens);
+    }
+
+    public Cookie createCookie(String token) {
+        Cookie cookie = new Cookie(COOKIE_NAME, token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setMaxAge(Duration.ofDays(1).toSecondsPart());
+        cookie.setPath("/");
+        return cookie;
     }
 }
