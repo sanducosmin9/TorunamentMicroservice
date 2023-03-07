@@ -26,7 +26,10 @@ public class AuthController {
             HttpServletResponse response
     ) {
         var authResponse = authService.register(request);
-        response.addCookie(authService.createCookie(authResponse.getToken()));
+        var cookie = authService.createCookie(authResponse.getToken());
+        //To be changed with docker env vars
+        cookie.setSecure(false);
+        response.addCookie(cookie);
         return ResponseEntity.ok(authResponse);
     }
 
@@ -36,7 +39,9 @@ public class AuthController {
             HttpServletResponse response
     ) {
         var authResponse = authService.authenticate(request);
-        response.addCookie(authService.createCookie(authResponse.getToken()));
+        var cookie = authService.createCookie(authResponse.getToken());
+        cookie.setSecure(false);
+        response.addCookie(cookie);
         return ResponseEntity.ok(authResponse);
     }
 
@@ -46,7 +51,10 @@ public class AuthController {
         var cookie = Stream.of(Optional.ofNullable(request.getCookies()).orElse(new Cookie[0]))
                 .filter(it -> authService.COOKIE_NAME.equals(it.getName()))
                 .findFirst();
-        cookie.ifPresent(it -> it.setMaxAge(0));
+        cookie.ifPresent(it -> {
+            it.setMaxAge(0);
+            it.setSecure(false);
+        });
         return ResponseEntity.noContent().build();
     }
 
