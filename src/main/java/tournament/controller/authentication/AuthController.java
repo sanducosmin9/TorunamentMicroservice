@@ -26,8 +26,6 @@ public class AuthController {
     ) {
         var authResponse = authService.register(request);
         var cookie = authService.createCookie(authResponse.getToken());
-        //To be changed with docker env vars
-        cookie.setSecure(false);
         response.addCookie(cookie);
         return ResponseEntity.ok(authResponse);
     }
@@ -39,7 +37,6 @@ public class AuthController {
     ) {
         var authResponse = authService.authenticate(request);
         var cookie = authService.createCookie(authResponse.getToken());
-        cookie.setSecure(false);
         response.addCookie(cookie);
         return ResponseEntity.ok(authResponse);
     }

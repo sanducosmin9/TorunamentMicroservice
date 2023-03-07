@@ -100,8 +100,8 @@ public class AuthenticationService {
     public Cookie createCookie(String token) {
         Cookie cookie = new Cookie(COOKIE_NAME, token);
         cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setMaxAge(Duration.ofDays(1).toSecondsPart());
+        cookie.setSecure(false);
+        cookie.setMaxAge(86400);
         cookie.setPath("/");
         return cookie;
     }
