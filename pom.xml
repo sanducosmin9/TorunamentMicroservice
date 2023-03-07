@@ -5,8 +5,8 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <version>3.0.4</version>
+        <relativePath/><!-- lookup parent from repository -->
     </parent>
     <groupId>tournament</groupId>
     <artifactId>TournamentMicroservice</artifactId>
@@ -20,7 +20,6 @@
         <assertj.version>3.24.2</assertj.version>
         <junit.version>5.9.2</junit.version>
         <flyway.version>9.8.1</flyway.version>
-        <spring-security.version>3.0.3</spring-security.version>
         <jjwt.version>0.11.5</jjwt.version>
     </properties>
     <dependencies>
@@ -73,8 +72,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <version>3.0.3</version>
-            <type>pom</type>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -118,5 +115,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
