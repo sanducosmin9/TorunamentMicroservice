@@ -6,20 +6,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tournament.service.AuthenticationService;
 
-import java.time.Duration;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@CrossOrigin
 public class AuthController {
 
     private final AuthenticationService authService;
