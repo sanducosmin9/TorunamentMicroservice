@@ -15,10 +15,9 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@CrossOrigin
-//        origins = {"http://localhost:5173"},
-//        methods = {RequestMethod.POST, RequestMethod.GET},
-//        allowCredentials = true,
+@CrossOrigin(
+        allowCredentials = "TRUE"
+)
 public class AuthController {
 
     private final AuthenticationService authService;
