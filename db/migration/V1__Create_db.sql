@@ -32,16 +32,6 @@ create table TEAM(
             REFERENCES TOURNAMENT(TOURNAMENT_ID)
 );
 
-create table MEMBER(
-    MEMBER_ID int generated always as identity,
-    NAME varchar(100),
-    TEAM_ID int not null,
-    PRIMARY KEY(MEMBER_ID),
-    CONSTRAINT fk_team
-        FOREIGN KEY (TEAM_ID)
-            REFERENCES TEAM(TEAM_ID)
-);
-
 create table MATCH_UP(
     MATCH_UP_ID int generated always as identity,
     WINNER_ID int not null,

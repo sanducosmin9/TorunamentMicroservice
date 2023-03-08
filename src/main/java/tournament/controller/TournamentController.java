@@ -17,7 +17,15 @@ public class TournamentController {
 
     private final TournamentService tournamentService;
 
-    @GetMapping()
+    // post create tournament -> returns id
+
+    // put update tournament by id
+
+    // get tournament by id
+
+    // get tournament by owner id
+
+    @GetMapping
     public ResponseEntity<Tournament> something() {
         return ResponseEntity.ok(tournamentService.createTournament());
     }

@@ -19,6 +19,14 @@ public class Matchup {
 
     @OneToOne
     @JoinColumn
+    private Team team1;
+
+    @OneToOne
+    @JoinColumn
+    private Team team2;
+
+    @OneToOne
+    @JoinColumn
     private Team winner;
 
     @OneToOne
