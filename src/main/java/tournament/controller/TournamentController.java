@@ -12,6 +12,7 @@ import tournament.service.TournamentService;
 @RestController
 @RequestMapping("/tournament")
 @RequiredArgsConstructor
+@CrossOrigin
 public class TournamentController {
 
     private final TournamentService tournamentService;
