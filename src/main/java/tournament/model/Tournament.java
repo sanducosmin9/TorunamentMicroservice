@@ -39,4 +39,8 @@ public class Tournament {
     @OneToMany(mappedBy = "tournament")
     @JsonManagedReference
     private List<Matchup> matchups;
+
+    @OneToMany(mappedBy = "tournament")
+    @JsonManagedReference
+    private List<Team> teams;
 }

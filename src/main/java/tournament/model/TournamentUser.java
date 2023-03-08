@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class TournamentUser {
-
     @Id
     @SequenceGenerator(name = "USER_ID_SEQUENCE", sequenceName = "USER_ID_SEQUENCE", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USER_ID_SEQUENCE")

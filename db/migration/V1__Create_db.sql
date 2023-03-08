@@ -10,6 +10,7 @@ create table TOURNAMENT (
     TOURNAMENT_ID int generated always as identity,
     USER_ID int not null,
     MATCH_UP_ID int not null,
+    TEAM_ID int not null,
     NAME varchar(100) not null,
     SIZE int not null,
     CREATION_DATE timestamp,
@@ -19,13 +20,15 @@ create table TOURNAMENT (
             REFERENCES TOURNAMENT_USER(USER_ID),
     CONSTRAINT fk_matchup
         FOREIGN KEY (MATCH_UP_ID)
-            REFERENCES MATCH_UP
+            REFERENCES MATCH_UP,
+    CONSTRAINT fk_team
+        FOREIGN KEY (TEAM_ID)
+            REFERENCES TEAM
 );
 create table TEAM(
     TEAM_ID int generated always as identity,
     NAME varchar(256),
     TOURNAMENT_ID int not null,
-    SIZE int,
     PRIMARY KEY(TEAM_ID),
     CONSTRAINT fk_tournament
         FOREIGN KEY (TOURNAMENT_ID)

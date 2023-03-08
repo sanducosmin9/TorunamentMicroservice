@@ -3,8 +3,12 @@ package tournament.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tournament.dto.TeamDTO;
+import tournament.dto.TournamentDTO;
 import tournament.model.Tournament;
 import tournament.service.TournamentService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/tournament")
@@ -22,16 +26,16 @@ public class TournamentController {
 
     // get tournament by owner id
 
-//    @PostMapping
-//    public ResponseEntity<Long> createTournament(
-//            @RequestBody
-//    ) {
-//
-//    }
+    @PostMapping
+    public ResponseEntity<Long> createTournament(
+            @RequestBody TournamentDTO tournamentDto
+    ) {
+        return ResponseEntity.ok(tournamentService.createTournament(tournamentDto));
+    }
 
     @GetMapping
     public ResponseEntity<Tournament> something() {
-        return ResponseEntity.ok(tournamentService.createTournament());
+        return ResponseEntity.ok(tournamentService.createMockTournament());
     }
 
 }
