@@ -22,7 +22,7 @@ public class TournamentUser {
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name = "USERNAME")
+    @Column(name = "USERNAME", unique = true)
     private String username;
 
     @Column(name = "PASSWORD")

@@ -2,10 +2,7 @@ package tournament.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tournament.model.Tournament;
 import tournament.service.TournamentService;
 
@@ -24,6 +21,13 @@ public class TournamentController {
     // get tournament by id
 
     // get tournament by owner id
+
+//    @PostMapping
+//    public ResponseEntity<Long> createTournament(
+//            @RequestBody
+//    ) {
+//
+//    }
 
     @GetMapping
     public ResponseEntity<Tournament> something() {
