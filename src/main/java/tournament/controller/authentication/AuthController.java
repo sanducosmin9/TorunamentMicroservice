@@ -16,7 +16,8 @@ import java.util.stream.Stream;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @CrossOrigin(
-        allowCredentials = "TRUE"
+        origins = {"http://localhost:5179"},
+        allowCredentials = "True"
 )
 public class AuthController {
 
@@ -30,6 +31,10 @@ public class AuthController {
         var authResponse = authService.register(request);
         var cookie = authService.createCookie(authResponse.getToken());
         response.addCookie(cookie);
+//        response.setHeader("Access-Control-Allow-Credentials", "true");
+//        response.setHeader("Access-Control-Allow-Headers", "Content-Type, withCredentials");
+//        response.setHeader("Access-Control-Allow-Methods", "POST");
+//        response.setHeader("Access-Control-Allow-Methods", "POST");
         return ResponseEntity.ok(authResponse);
     }
 
