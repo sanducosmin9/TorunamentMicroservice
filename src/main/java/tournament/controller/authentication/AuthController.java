@@ -15,10 +15,7 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-@CrossOrigin(
-        origins = {"http://localhost:5173"},
-        allowCredentials = "True"
-)
+@CrossOrigin
 public class AuthController {
 
     private final AuthenticationService authService;
@@ -31,10 +28,10 @@ public class AuthController {
         var authResponse = authService.register(request);
         var cookie = authService.createCookie(authResponse.getToken());
         response.addCookie(cookie);
-//        response.setHeader("Access-Control-Allow-Credentials", "true");
-//        response.setHeader("Access-Control-Allow-Headers", "Content-Type, withCredentials");
-//        response.setHeader("Access-Control-Allow-Methods", "POST");
-//        response.setHeader("Access-Control-Allow-Methods", "POST");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, withCredentials");
+        response.setHeader("Access-Control-Allow-Methods", "POST");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
         return ResponseEntity.ok(authResponse);
     }
 
@@ -46,6 +43,10 @@ public class AuthController {
         var authResponse = authService.authenticate(request);
         var cookie = authService.createCookie(authResponse.getToken());
         response.addCookie(cookie);
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type, withCredentials");
+        response.setHeader("Access-Control-Allow-Methods", "POST");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
         return ResponseEntity.ok(authResponse);
     }
 
