@@ -4,10 +4,13 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import tournament.dto.MatchupUpdateRequest;
 import tournament.dto.TournamentDTO;
+import tournament.exceptions.TournamentNotFoundException;
 import tournament.model.Matchup;
 import tournament.model.Team;
 import tournament.model.Tournament;
+import tournament.repository.MatchupRepository;
 import tournament.repository.TeamRepository;
 import tournament.repository.TournamentRepository;
 import tournament.repository.TournamentUserRepository;
@@ -15,7 +18,6 @@ import tournament.repository.TournamentUserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,6 +27,12 @@ public class TournamentServiceImpl implements TournamentService {
     private final TournamentRepository tournamentRepository;
 
     private final TeamRepository teamRepository;
+
+    private final MatchupRepository matchupRepository;
+
+    private final MatchupService matchupService;
+
+    private final TeamService teamService;
 
     @Override
     @Transactional
@@ -36,24 +44,82 @@ public class TournamentServiceImpl implements TournamentService {
         var persistedTeams = tournamentDTO
                 .getTeams()
                 .stream()
-                .map(it -> teamRepository.save(new Team(0L, it.getName(), null)))
+                .map(it -> teamRepository.save(new Team(0L, it.getName(), null, null)))
                 .toList();
 
         Tournament tournament = new Tournament(
                 0L,
                 owner,
                 tournamentDTO.getName(),
-                tournamentDTO.getSize(),
+                persistedTeams.size(),
                 tournamentDTO.getCreationDate(),
                 new ArrayList<>(),
-                persistedTeams
+                persistedTeams,
+                null
         );
         var persistedTournament = tournamentRepository.save(tournament);
         owner.getTournaments().add(persistedTournament);
         persistedTeams.forEach(it -> it.setTournament(persistedTournament));
+        persistedTournament.getMatchups().addAll(matchupService.createFirstRoundMatchups(persistedTournament));
         return persistedTournament.getId();
     }
 
+    @Override
+    @Transactional
+    public Long updateMatchup(MatchupUpdateRequest request) {
+        var tournament = this.getTournament(request.getTournamentId());
+        var winner = teamService.getTeam(request.getWinnerId());
+        var endedMatchup = matchupService.getMatchup(request.getMatchupId());
+        var loser = matchupService.getLoser(endedMatchup, winner);
+        if(isFinalRound(tournament)) {
+            endedMatchup.setHasEnded(true);
+            endedMatchup.setWinner(winner);
+            endedMatchup.setLoser(loser);
+            tournament.setWinner(winner);
+            return tournament.getId();
+        }
+        Matchup neighborMatchup = this.getNeighborMatchup(tournament, endedMatchup);
+        if(!neighborMatchup.isHasEnded()) {
+            Matchup newMatchup = new Matchup(
+                    0L,
+                    winner,
+                    null,
+                    null,
+                    null,
+                    tournament,
+                    false
+            );
+            var persistedMatchup = matchupRepository.save(newMatchup);
+            winner.setActiveMatchup(persistedMatchup);
+        } else {
+            var activeMatchup = neighborMatchup.getWinner().getActiveMatchup();
+            activeMatchup.setTeam2(winner);
+            matchupRepository.save(activeMatchup);
+        }
+        endedMatchup.setHasEnded(true);
+        endedMatchup.setWinner(winner);
+        endedMatchup.setLoser(loser);
+        return tournament.getId();
+    }
+
+    private boolean isFinalRound(Tournament tournament) {
+        return tournament.getMatchups().stream()
+                .filter(it -> !it.isHasEnded())
+                .count() == 1;
+    }
+
+    private Matchup getNeighborMatchup(Tournament tournament, Matchup matchup) {
+        long neighborMatchupId = matchup.getId() % 2 == 0 ? matchup.getId() + 1 : matchup.getId() - 1;
+        return matchupService.getMatchup(neighborMatchupId);
+    }
+
+    @Override
+    public Tournament getTournament(Long tournamentId) {
+        return tournamentRepository.findById(tournamentId)
+                .orElseThrow(() ->
+                        new TournamentNotFoundException("Tournament with id " + tournamentId + " was not found")
+                );
+    }
 
     @Override
     public Tournament createMockTournament() {
@@ -90,6 +156,4 @@ public class TournamentServiceImpl implements TournamentService {
         return Team.builder()
                 .name(teamName).build();
     }
-
-
 }

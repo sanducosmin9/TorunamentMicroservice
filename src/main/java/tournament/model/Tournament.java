@@ -2,6 +2,7 @@ package tournament.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -43,4 +44,9 @@ public class Tournament {
     @OneToMany(mappedBy = "tournament")
     @JsonManagedReference
     private List<Team> teams;
+
+    @OneToOne
+    @JoinColumn
+    @Nullable
+    private Team winner;
 }

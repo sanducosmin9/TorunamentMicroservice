@@ -12,10 +12,14 @@ public class MatchupDTOMapper implements Function<Matchup, MatchupDTO> {
     @Override
     public MatchupDTO apply(Matchup matchup) {
         return new MatchupDTO(
-                new TeamDTO(matchup.getTeam1().getName()),
-                new TeamDTO(matchup.getTeam2().getName()),
-                new TeamDTO(matchup.getWinner().getName()),
-                new TeamDTO(matchup.getLoser().getName()),
+                matchup.getId(),
+                new TeamDTO(matchup.getTeam1().getId(), matchup.getTeam1().getName()),
+                matchup.getTeam2() == null ? null
+                        : new TeamDTO(matchup.getTeam2().getId(), matchup.getTeam2().getName()),
+                matchup.getWinner() == null ? null
+                        : new TeamDTO(matchup.getWinner().getId(), matchup.getWinner().getName()),
+                matchup.getWinner() == null ? null
+                        : new TeamDTO(matchup.getLoser().getId(), matchup.getLoser().getName()),
                 matchup.isHasEnded()
         );
     }

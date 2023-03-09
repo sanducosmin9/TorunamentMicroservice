@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class MatchupDTO {
+    private Long id;
     private TeamDTO team1;
     private TeamDTO team2;
     private TeamDTO winner;

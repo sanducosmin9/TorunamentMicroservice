@@ -1,6 +1,7 @@
 package tournament.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,4 +24,9 @@ public class Team {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     private Tournament tournament;
+
+    @OneToOne
+    @Nullable
+    @JoinColumn
+    private Matchup activeMatchup;
 }
