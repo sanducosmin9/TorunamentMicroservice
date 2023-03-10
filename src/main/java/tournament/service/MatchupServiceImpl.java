@@ -3,6 +3,7 @@ package tournament.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import tournament.exceptions.MatchupNotCompletedException;
 import tournament.exceptions.MatchupNotFoundException;
 import tournament.model.Matchup;
 import tournament.model.Team;
@@ -59,4 +60,37 @@ public class MatchupServiceImpl implements MatchupService{
             return matchup.getTeam1();
         }
     }
+
+    @Override
+    public void updateMatchupWithWinner(Tournament tournament, Matchup matchup, Team winner) {
+        if(matchup.getTeam2() == null) {
+            throw new MatchupNotCompletedException("There is only one team in this matchup!");
+        }
+        Matchup neighborMatchup = this.getNeighborMatchup(tournament, matchup);
+        if(!neighborMatchup.isHasEnded()) {
+            Matchup newMatchup = new Matchup(
+                    0L,
+                    winner,
+                    null,
+                    null,
+                    null,
+                    tournament,
+                    false
+            );
+            var persistedMatchup = matchupRepository.save(newMatchup);
+            winner.setActiveMatchup(persistedMatchup);
+        } else {
+            var activeMatchup = neighborMatchup.getWinner().getActiveMatchup();
+            activeMatchup.setTeam2(winner);
+            matchupRepository.save(activeMatchup);
+        }
+    }
+
+    private Matchup getNeighborMatchup(Tournament tournament, Matchup matchup) {
+        var matchups = tournament.getMatchups();
+        var currentMatchupIndex = matchups.indexOf(matchup);
+        int neighborMatchupIndex = currentMatchupIndex % 2 == 0 ? currentMatchupIndex + 1 : currentMatchupIndex - 1;
+        return matchups.get(neighborMatchupIndex);
+    }
+
 }

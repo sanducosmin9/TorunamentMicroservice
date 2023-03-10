@@ -26,12 +26,7 @@ public class AuthController {
             HttpServletResponse response
     ) {
         var authResponse = authService.register(request);
-        var cookie = authService.createCookie(authResponse.getToken());
-        response.addCookie(cookie);
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, withCredentials");
-        response.setHeader("Access-Control-Allow-Methods", "POST");
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+        response.addCookie(authService.createCookie(authResponse.getToken()));
         return ResponseEntity.ok(authResponse);
     }
 
@@ -41,12 +36,7 @@ public class AuthController {
             HttpServletResponse response
     ) {
         var authResponse = authService.authenticate(request);
-        var cookie = authService.createCookie(authResponse.getToken());
-        response.addCookie(cookie);
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Allow-Headers", "Content-Type, withCredentials");
-        response.setHeader("Access-Control-Allow-Methods", "POST");
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+        response.addCookie(authService.createCookie(authResponse.getToken()));
         return ResponseEntity.ok(authResponse);
     }
 

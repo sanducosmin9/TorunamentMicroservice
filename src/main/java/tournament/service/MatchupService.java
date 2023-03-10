@@ -12,4 +12,6 @@ public interface MatchupService {
     Matchup getMatchup(Long matchupId);
 
     Team getLoser(Matchup matchup, Team winner);
+
+    void updateMatchupWithWinner(Tournament tournament, Matchup matchup, Team winner);
 }

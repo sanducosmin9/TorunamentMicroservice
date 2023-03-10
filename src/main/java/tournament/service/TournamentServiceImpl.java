@@ -10,7 +10,6 @@ import tournament.exceptions.TournamentNotFoundException;
 import tournament.model.Matchup;
 import tournament.model.Team;
 import tournament.model.Tournament;
-import tournament.repository.MatchupRepository;
 import tournament.repository.TeamRepository;
 import tournament.repository.TournamentRepository;
 import tournament.repository.TournamentUserRepository;
@@ -27,8 +26,6 @@ public class TournamentServiceImpl implements TournamentService {
     private final TournamentRepository tournamentRepository;
 
     private final TeamRepository teamRepository;
-
-    private final MatchupRepository matchupRepository;
 
     private final MatchupService matchupService;
 
@@ -69,48 +66,27 @@ public class TournamentServiceImpl implements TournamentService {
     public Long updateMatchup(MatchupUpdateRequest request) {
         var tournament = this.getTournament(request.getTournamentId());
         var winner = teamService.getTeam(request.getWinnerId());
-        var endedMatchup = matchupService.getMatchup(request.getMatchupId());
-        var loser = matchupService.getLoser(endedMatchup, winner);
+        var matchup = matchupService.getMatchup(request.getMatchupId());
+        var loser = matchupService.getLoser(matchup, winner);
+        endMatchup(matchup, winner, loser);
         if(isFinalRound(tournament)) {
-            endedMatchup.setHasEnded(true);
-            endedMatchup.setWinner(winner);
-            endedMatchup.setLoser(loser);
             tournament.setWinner(winner);
             return tournament.getId();
         }
-        Matchup neighborMatchup = this.getNeighborMatchup(tournament, endedMatchup);
-        if(!neighborMatchup.isHasEnded()) {
-            Matchup newMatchup = new Matchup(
-                    0L,
-                    winner,
-                    null,
-                    null,
-                    null,
-                    tournament,
-                    false
-            );
-            var persistedMatchup = matchupRepository.save(newMatchup);
-            winner.setActiveMatchup(persistedMatchup);
-        } else {
-            var activeMatchup = neighborMatchup.getWinner().getActiveMatchup();
-            activeMatchup.setTeam2(winner);
-            matchupRepository.save(activeMatchup);
-        }
-        endedMatchup.setHasEnded(true);
-        endedMatchup.setWinner(winner);
-        endedMatchup.setLoser(loser);
+        matchupService.updateMatchupWithWinner(tournament, matchup, winner);
         return tournament.getId();
+    }
+
+    private void endMatchup(Matchup matchup, Team winner, Team loser) {
+        matchup.setHasEnded(true);
+        matchup.setWinner(winner);
+        matchup.setLoser(loser);
     }
 
     private boolean isFinalRound(Tournament tournament) {
         return tournament.getMatchups().stream()
                 .filter(it -> !it.isHasEnded())
                 .count() == 1;
-    }
-
-    private Matchup getNeighborMatchup(Tournament tournament, Matchup matchup) {
-        long neighborMatchupId = matchup.getId() % 2 == 0 ? matchup.getId() + 1 : matchup.getId() - 1;
-        return matchupService.getMatchup(neighborMatchupId);
     }
 
     @Override
