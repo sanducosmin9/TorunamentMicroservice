@@ -2,6 +2,7 @@ package tournament.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import tournament.exceptions.MatchupNotCompletedException;
 import tournament.exceptions.MatchupNotFoundException;
@@ -14,9 +15,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class MatchupServiceImpl implements MatchupService{
+public class MatchupServiceImpl implements MatchupService {
 
     private final MatchupRepository matchupRepository;
 
@@ -26,7 +28,7 @@ public class MatchupServiceImpl implements MatchupService{
         var teams = tournament.getTeams();
         Collections.shuffle(teams);
         List<Matchup> firstRoundMatchups = new ArrayList<>();
-        for(int i = 0; i < teams.size() / 2; i++) {
+        for (int i = 0; i < teams.size() / 2; i++) {
             Matchup matchup = new Matchup(
                     0L,
                     teams.get(i * 2),
@@ -52,7 +54,7 @@ public class MatchupServiceImpl implements MatchupService{
 
     @Override
     public Team getLoser(Matchup matchup, Team winner) {
-        if(matchup.getTeam1() == winner) {
+        if (matchup.getTeam1() == winner) {
             matchup.setLoser(matchup.getTeam2());
             return matchup.getTeam2();
         } else {
@@ -63,34 +65,38 @@ public class MatchupServiceImpl implements MatchupService{
 
     @Override
     public void updateMatchupWithWinner(Tournament tournament, Matchup matchup, Team winner) {
-        if(matchup.getTeam2() == null) {
+        if (matchup.getTeam2() == null) {
             throw new MatchupNotCompletedException("There is only one team in this matchup!");
         }
-        Matchup neighborMatchup = this.getNeighborMatchup(tournament, matchup);
-        if(!neighborMatchup.isHasEnded()) {
-            Matchup newMatchup = new Matchup(
-                    0L,
-                    winner,
-                    null,
-                    null,
-                    null,
-                    tournament,
-                    false
-            );
+        int neighborMatchupIndex = this.getNeighborMatchupIndex(tournament, matchup);
+        Matchup neighborMatchup = tournament.getMatchups().get(neighborMatchupIndex);
+        if (!neighborMatchup.isHasEnded()) {
+            Matchup newMatchup = new Matchup();
+            if (neighborMatchupIndex % 2 == 0) {
+                newMatchup.setTeam1(winner);
+            } else {
+                newMatchup.setTeam2(winner);
+            }
+            newMatchup.setHasEnded(false);
+            newMatchup.setTournament(tournament);
+            newMatchup.setId(0L);
             var persistedMatchup = matchupRepository.save(newMatchup);
             winner.setActiveMatchup(persistedMatchup);
         } else {
             var activeMatchup = neighborMatchup.getWinner().getActiveMatchup();
-            activeMatchup.setTeam2(winner);
+            if (neighborMatchupIndex % 2 == 0) {
+                activeMatchup.setTeam1(winner);
+            } else {
+                activeMatchup.setTeam2(winner);
+            }
             matchupRepository.save(activeMatchup);
         }
     }
 
-    private Matchup getNeighborMatchup(Tournament tournament, Matchup matchup) {
+    private int getNeighborMatchupIndex(Tournament tournament, Matchup matchup) {
         var matchups = tournament.getMatchups();
         var currentMatchupIndex = matchups.indexOf(matchup);
-        int neighborMatchupIndex = currentMatchupIndex % 2 == 0 ? currentMatchupIndex + 1 : currentMatchupIndex - 1;
-        return matchups.get(neighborMatchupIndex);
+        return currentMatchupIndex % 2 == 0 ? currentMatchupIndex + 1 : currentMatchupIndex - 1;
     }
 
 }

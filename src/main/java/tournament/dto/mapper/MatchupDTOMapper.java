@@ -13,7 +13,8 @@ public class MatchupDTOMapper implements Function<Matchup, MatchupDTO> {
     public MatchupDTO apply(Matchup matchup) {
         return new MatchupDTO(
                 matchup.getId(),
-                new TeamDTO(matchup.getTeam1().getId(), matchup.getTeam1().getName()),
+                matchup.getTeam1() == null ? null
+                        : new TeamDTO(matchup.getTeam1().getId(), matchup.getTeam1().getName()),
                 matchup.getTeam2() == null ? null
                         : new TeamDTO(matchup.getTeam2().getId(), matchup.getTeam2().getName()),
                 matchup.getWinner() == null ? null
