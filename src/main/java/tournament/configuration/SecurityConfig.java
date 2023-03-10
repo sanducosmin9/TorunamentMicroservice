@@ -31,16 +31,16 @@ public class SecurityConfig {
             .csrf()
             .disable()
             .authorizeHttpRequests()
-            .requestMatchers("/auth/**", "/tournament/**", "/tournament")
+            .requestMatchers("/auth/**")
             .permitAll()
             .anyRequest()
             .authenticated()
             .and()
             .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//            .and()
-//            .authenticationProvider(authenticationProvider)
-//            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         http.headers().frameOptions().sameOrigin();
         return http.build();
     }
