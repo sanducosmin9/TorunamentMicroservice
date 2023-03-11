@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tournament.dto.GetTournamentsRequest;
 import tournament.dto.MatchupUpdateRequest;
 import tournament.dto.TeamDTO;
 import tournament.dto.TournamentDTO;
@@ -12,6 +13,7 @@ import tournament.model.Tournament;
 import tournament.service.TournamentService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -39,6 +41,18 @@ public class TournamentController {
     ) {
         var tournament = tournamentService.getTournament(id);
         return ResponseEntity.ok(tournamentDTOMapper.apply(tournament));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TournamentDTO>> getTournaments(
+            @RequestBody GetTournamentsRequest getTournamentsRequest
+    ) {
+        var tournaments = tournamentService.getTournaments(getTournamentsRequest);
+        return ResponseEntity.ok(
+                tournaments.stream()
+                        .map(tournamentDTOMapper)
+                        .collect(Collectors.toList())
+        );
     }
 
     @PutMapping

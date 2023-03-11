@@ -2,8 +2,11 @@ package tournament.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import tournament.dto.GetTournamentsRequest;
 import tournament.dto.MatchupUpdateRequest;
 import tournament.dto.TournamentDTO;
 import tournament.exceptions.TournamentNotFoundException;
@@ -49,7 +52,7 @@ public class TournamentServiceImpl implements TournamentService {
                 owner,
                 tournamentDTO.getName(),
                 persistedTeams.size(),
-                tournamentDTO.getCreationDate(),
+                LocalDateTime.now(),
                 new ArrayList<>(),
                 persistedTeams,
                 null
@@ -98,38 +101,8 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public Tournament createMockTournament() {
-        Tournament tournament = Tournament.builder()
-                .name("Default")
-                .size(16)
-                .creationDate(LocalDateTime.now())
-                .build();
-        var savedTournament = tournamentRepository.save(tournament);
-        savedTournament.setMatchups(
-                List.of(
-                        mockMatchup(savedTournament, "T1", "T2", true),
-                        mockMatchup(savedTournament, "T3", "T4", true),
-                        mockMatchup(savedTournament, "T5", "T6", true),
-                        mockMatchup(savedTournament, "T7", "T8", true),
-                        mockMatchup(savedTournament, "T1", "T3", true),
-                        mockMatchup(savedTournament, "T5", "T7", false),
-                        mockMatchup(savedTournament, "TBD", "TBD", false)
-                )
-        );
-        return savedTournament;
-    }
-
-    private Matchup mockMatchup(Tournament tournament, String t1, String t2, boolean hasEnded) {
-        return Matchup.builder()
-                .hasEnded(hasEnded)
-                .tournament(tournament)
-                .loser(mockTeam(t1))
-                .winner(mockTeam(t2))
-                .build();
-    }
-
-    private Team mockTeam(String teamName) {
-        return Team.builder()
-                .name(teamName).build();
+    public List<Tournament> getTournaments(GetTournamentsRequest getTournamentsRequest) {
+        Pageable pageable = PageRequest.of(getTournamentsRequest.getPage(), getTournamentsRequest.getSize());
+        return tournamentRepository.findAll(pageable).toList();
     }
 }
