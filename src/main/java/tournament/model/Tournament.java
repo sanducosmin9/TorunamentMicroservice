@@ -39,6 +39,7 @@ public class Tournament {
 
     @OneToMany(mappedBy = "tournament")
     @JsonManagedReference
+    @OrderBy("matchupNumber")
     private List<Matchup> matchups;
 
     @OneToMany(mappedBy = "tournament")

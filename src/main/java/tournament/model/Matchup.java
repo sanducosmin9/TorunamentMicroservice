@@ -38,4 +38,8 @@ public class Matchup {
     private Tournament tournament;
 
     private boolean hasEnded;
+
+    private int round;
+
+    private int matchupNumber;
 }

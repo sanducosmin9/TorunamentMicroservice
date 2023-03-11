@@ -36,7 +36,9 @@ public class MatchupServiceImpl implements MatchupService {
                     null,
                     null,
                     tournament,
-                    false
+                    false,
+                    1,
+                    i
             );
             var persistedMatchup = matchupRepository.save(matchup);
             teams.get(i * 2).setActiveMatchup(persistedMatchup);
@@ -64,6 +66,7 @@ public class MatchupServiceImpl implements MatchupService {
     }
 
     @Override
+    @Transactional
     public void updateMatchupWithWinner(Tournament tournament, Matchup matchup, Team winner) {
         if (matchup.getTeam2() == null) {
             throw new MatchupNotCompletedException("There is only one team in this matchup!");
@@ -72,14 +75,17 @@ public class MatchupServiceImpl implements MatchupService {
         Matchup neighborMatchup = tournament.getMatchups().get(neighborMatchupIndex);
         if (!neighborMatchup.isHasEnded()) {
             Matchup newMatchup = new Matchup();
-            if (neighborMatchupIndex % 2 == 0) {
+            if (neighborMatchupIndex % 2 == 1) {
                 newMatchup.setTeam1(winner);
+                newMatchup.setMatchupNumber(tournament.getSize() / 2 + neighborMatchupIndex);
             } else {
                 newMatchup.setTeam2(winner);
+                newMatchup.setMatchupNumber(tournament.getSize() / 2 + neighborMatchupIndex - 1);
             }
             newMatchup.setHasEnded(false);
             newMatchup.setTournament(tournament);
             newMatchup.setId(0L);
+            newMatchup.setRound(matchup.getRound() + 1);
             var persistedMatchup = matchupRepository.save(newMatchup);
             winner.setActiveMatchup(persistedMatchup);
         } else {
@@ -89,7 +95,6 @@ public class MatchupServiceImpl implements MatchupService {
             } else {
                 activeMatchup.setTeam2(winner);
             }
-            matchupRepository.save(activeMatchup);
         }
     }
 

@@ -14,4 +14,5 @@ public class MatchupDTO {
     private TeamDTO winner;
     private TeamDTO loser;
     private boolean hasEnded;
+    private int round;
 }

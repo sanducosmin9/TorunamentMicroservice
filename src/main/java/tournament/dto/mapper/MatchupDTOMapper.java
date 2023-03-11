@@ -21,7 +21,8 @@ public class MatchupDTOMapper implements Function<Matchup, MatchupDTO> {
                         : new TeamDTO(matchup.getWinner().getId(), matchup.getWinner().getName()),
                 matchup.getWinner() == null ? null
                         : new TeamDTO(matchup.getLoser().getId(), matchup.getLoser().getName()),
-                matchup.isHasEnded()
+                matchup.isHasEnded(),
+                matchup.getRound()
         );
     }
 }

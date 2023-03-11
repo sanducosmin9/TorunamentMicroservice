@@ -23,11 +23,6 @@ public class TournamentController {
     private final TournamentService tournamentService;
 
     private final TournamentDTOMapper tournamentDTOMapper;
-    // post create tournament -> returns id
-
-    // put update tournament by id
-
-    // get tournament by id
 
     // get tournament by owner id
 
@@ -51,11 +46,6 @@ public class TournamentController {
             @RequestBody MatchupUpdateRequest matchupUpdateRequest
     ) {
         return ResponseEntity.ok(tournamentService.updateMatchup(matchupUpdateRequest));
-    }
-
-    @GetMapping("/mock")
-    public ResponseEntity<Tournament> something() {
-        return ResponseEntity.ok(tournamentService.createMockTournament());
     }
 
 }
