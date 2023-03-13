@@ -2,6 +2,7 @@ package tournament.dto.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import tournament.dto.MatchupDTO;
 import tournament.dto.TeamDTO;
 import tournament.dto.TournamentDTO;
 import tournament.dto.TournamentUserDTO;
@@ -24,7 +25,9 @@ public class TournamentDTOMapper implements Function<Tournament, TournamentDTO> 
                 new TournamentUserDTO(tournament.getOwner().getUsername(), new ArrayList<>()),
                 tournament.getName(),
                 tournament.getCreationDate(),
-                tournament.getMatchups().stream().map(matchupDTOMapper).collect(Collectors.toList()),
+                tournament.getMatchups().stream()
+                        .map(matchupDTOMapper)
+                        .collect(Collectors.groupingBy(MatchupDTO::getRound)),
                 tournament.getTeams().stream()
                         .map(it -> new TeamDTO(it.getId(), it.getName()))
                         .collect(Collectors.toList()),

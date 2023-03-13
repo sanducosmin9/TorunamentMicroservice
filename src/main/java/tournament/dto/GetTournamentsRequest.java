@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class GetTournamentsRequest {
     int page;
     int size;
-    boolean active;
 }

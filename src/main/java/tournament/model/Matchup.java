@@ -13,6 +13,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 public class Matchup {
+
+    public Matchup(Long id, Tournament tournament, int round, int matchupNumber) {
+        this.id = id;
+        this.tournament = tournament;
+        this.round = round;
+        this.matchupNumber = matchupNumber;
+    }
+
     @Id
     @GeneratedValue
     private Long id;

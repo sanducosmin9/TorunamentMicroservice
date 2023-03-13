@@ -60,7 +60,7 @@ public class TournamentServiceImpl implements TournamentService {
         var persistedTournament = tournamentRepository.save(tournament);
         owner.getTournaments().add(persistedTournament);
         persistedTeams.forEach(it -> it.setTournament(persistedTournament));
-        persistedTournament.getMatchups().addAll(matchupService.createFirstRoundMatchups(persistedTournament));
+        matchupService.createAllMatchups(persistedTournament);
         return persistedTournament.getId();
     }
 
@@ -71,12 +71,12 @@ public class TournamentServiceImpl implements TournamentService {
         var winner = teamService.getTeam(request.getWinnerId());
         var matchup = matchupService.getMatchup(request.getMatchupId());
         var loser = matchupService.getLoser(matchup, winner);
-        endMatchup(matchup, winner, loser);
         if(isFinalRound(tournament)) {
             tournament.setWinner(winner);
-            return tournament.getId();
+        } else {
+            matchupService.updateMatchupWithWinner(tournament, matchup, winner);
         }
-        matchupService.updateMatchupWithWinner(tournament, matchup, winner);
+        endMatchup(matchup, winner, loser);
         return tournament.getId();
     }
 
@@ -103,6 +103,7 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public List<Tournament> getTournaments(GetTournamentsRequest getTournamentsRequest) {
         Pageable pageable = PageRequest.of(getTournamentsRequest.getPage(), getTournamentsRequest.getSize());
+        //get active tournaments
         return tournamentRepository.findAll(pageable).toList();
     }
 }

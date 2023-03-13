@@ -24,7 +24,30 @@ public class MatchupServiceImpl implements MatchupService {
 
     @Override
     @Transactional
-    public List<Matchup> createFirstRoundMatchups(Tournament tournament) {
+    public void createAllMatchups(Tournament tournament) {
+        var matchups = tournament.getMatchups();
+        var teams = tournament.getTeams();
+        int numberOfMatchups = teams.size() - 1;
+        int matchupNumber = teams.size() / 2;
+        int roundNumber = 1;
+        matchups.addAll(createFirstRoundMatchups(tournament));
+        for (int i = matchupNumber, j = matchupNumber; i < numberOfMatchups; i++, j--) {
+            if (j == matchupNumber) {
+                roundNumber++;
+                matchupNumber /= 2;
+            }
+            Matchup matchup = new Matchup(
+                    0L,
+                    tournament,
+                    roundNumber,
+                    i
+            );
+            var persistedMatchup = matchupRepository.save(matchup);
+            matchups.add(persistedMatchup);
+        }
+    }
+
+    private List<Matchup> createFirstRoundMatchups(Tournament tournament) {
         var teams = tournament.getTeams();
         Collections.shuffle(teams);
         List<Matchup> firstRoundMatchups = new ArrayList<>();
@@ -68,40 +91,19 @@ public class MatchupServiceImpl implements MatchupService {
     @Override
     @Transactional
     public void updateMatchupWithWinner(Tournament tournament, Matchup matchup, Team winner) {
-        if (matchup.getTeam2() == null) {
+        if (matchup.getTeam2() == null || matchup.getTeam1() == null) {
             throw new MatchupNotCompletedException("There is only one team in this matchup!");
         }
-        int neighborMatchupIndex = this.getNeighborMatchupIndex(tournament, matchup);
-        Matchup neighborMatchup = tournament.getMatchups().get(neighborMatchupIndex);
-        if (!neighborMatchup.isHasEnded()) {
-            Matchup newMatchup = new Matchup();
-            if (neighborMatchupIndex % 2 == 1) {
-                newMatchup.setTeam1(winner);
-                newMatchup.setMatchupNumber(tournament.getSize() / 2 + neighborMatchupIndex);
-            } else {
-                newMatchup.setTeam2(winner);
-                newMatchup.setMatchupNumber(tournament.getSize() / 2 + neighborMatchupIndex - 1);
-            }
-            newMatchup.setHasEnded(false);
-            newMatchup.setTournament(tournament);
-            newMatchup.setId(0L);
-            newMatchup.setRound(matchup.getRound() + 1);
-            var persistedMatchup = matchupRepository.save(newMatchup);
-            winner.setActiveMatchup(persistedMatchup);
+        int nextMatchupNumber = matchup.getMatchupNumber() / 2 + tournament.getSize() / 2;
+        var nextMatchup = tournament.getMatchups()
+                .stream()
+                .filter(it -> it.getMatchupNumber() == nextMatchupNumber)
+                .findFirst()
+                .orElseThrow(() -> new MatchupNotFoundException("The matchup with this number was not found"));
+        if(matchup.getMatchupNumber() % 2 == 0) {
+            nextMatchup.setTeam1(winner);
         } else {
-            var activeMatchup = neighborMatchup.getWinner().getActiveMatchup();
-            if (neighborMatchupIndex % 2 == 0) {
-                activeMatchup.setTeam1(winner);
-            } else {
-                activeMatchup.setTeam2(winner);
-            }
+            nextMatchup.setTeam2(winner);
         }
     }
-
-    private int getNeighborMatchupIndex(Tournament tournament, Matchup matchup) {
-        var matchups = tournament.getMatchups();
-        var currentMatchupIndex = matchups.indexOf(matchup);
-        return currentMatchupIndex % 2 == 0 ? currentMatchupIndex + 1 : currentMatchupIndex - 1;
-    }
-
 }
