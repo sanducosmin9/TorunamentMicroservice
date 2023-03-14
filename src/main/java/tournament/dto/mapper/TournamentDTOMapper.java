@@ -5,10 +5,8 @@ import org.springframework.stereotype.Service;
 import tournament.dto.MatchupDTO;
 import tournament.dto.TeamDTO;
 import tournament.dto.TournamentDTO;
-import tournament.dto.TournamentUserDTO;
 import tournament.model.Tournament;
 
-import java.util.ArrayList;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
