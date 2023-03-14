@@ -10,9 +10,10 @@ import java.util.Map;
 @Data
 public class TournamentDTO {
     private Long id;
-    private TournamentUserDTO owner;
+    private String username;
     private String name;
     private LocalDateTime creationDate;
+    private String game;
     private Map<Integer, List<MatchupDTO>> matchups;
     private List<TeamDTO> teams;
     private TeamDTO winner;

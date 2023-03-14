@@ -6,9 +6,9 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Table(name = "TOURNAMENT")
 @Getter
@@ -37,6 +37,9 @@ public class Tournament {
 
     @Column(name = "CREATION_DATE")
     private LocalDateTime creationDate;
+
+    @Column(name = "GAME")
+    private String game;
 
     @OneToMany(mappedBy = "tournament")
     @JsonManagedReference

@@ -1,6 +1,5 @@
 package tournament.service;
 
-import tournament.dto.GetTournamentsRequest;
 import tournament.dto.MatchupUpdateRequest;
 import tournament.dto.TournamentDTO;
 import tournament.model.Tournament;
@@ -15,5 +14,5 @@ public interface TournamentService {
 
     Tournament getTournament(Long tournamentId);
 
-    List<Tournament> getTournaments(GetTournamentsRequest getTournamentsRequest);
+    List<Tournament> getTournaments(int page, int size);
 }

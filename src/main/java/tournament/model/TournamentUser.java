@@ -3,6 +3,7 @@ package tournament.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 
 import java.util.List;
@@ -23,6 +24,16 @@ public class TournamentUser {
 
     @Column(name = "USERNAME", unique = true)
     private String username;
+
+    @Column(name = "EMAIL", unique = true)
+    @Email(message = "Invalid email format")
+    private String email;
+
+    @Column(name = "FIRST_NAME")
+    private String firstName;
+
+    @Column(name = "LAST_NAME")
+    private String lastName;
 
     @Column(name = "PASSWORD")
     private String password;

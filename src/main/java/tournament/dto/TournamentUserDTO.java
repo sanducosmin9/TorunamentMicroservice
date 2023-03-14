@@ -9,5 +9,8 @@ import java.util.List;
 @Data
 public class TournamentUserDTO {
     private String username;
+    private String email;
+    private String firstName;
+    private String lastName;
     private List<TournamentDTO> tournaments;
 }

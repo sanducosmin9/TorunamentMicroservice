@@ -22,9 +22,10 @@ public class TournamentDTOMapper implements Function<Tournament, TournamentDTO> 
     public TournamentDTO apply(Tournament tournament) {
         return new TournamentDTO(
                 tournament.getId(),
-                new TournamentUserDTO(tournament.getOwner().getUsername(), new ArrayList<>()),
+                tournament.getOwner().getUsername(),
                 tournament.getName(),
                 tournament.getCreationDate(),
+                tournament.getGame(),
                 tournament.getMatchups().stream()
                         .map(matchupDTOMapper)
                         .collect(Collectors.groupingBy(MatchupDTO::getRound)),

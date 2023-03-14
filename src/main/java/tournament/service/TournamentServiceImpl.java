@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import tournament.dto.GetTournamentsRequest;
 import tournament.dto.MatchupUpdateRequest;
 import tournament.dto.TournamentDTO;
 import tournament.exceptions.TournamentNotFoundException;
@@ -37,7 +36,7 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     @Transactional
     public Long createTournament(TournamentDTO tournamentDTO) {
-        var username = tournamentDTO.getOwner().getUsername();
+        var username = tournamentDTO.getUsername();
         var owner = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User with " + username + " was not found"));
 
@@ -53,6 +52,7 @@ public class TournamentServiceImpl implements TournamentService {
                 tournamentDTO.getName(),
                 persistedTeams.size(),
                 LocalDateTime.now(),
+                tournamentDTO.getGame(),
                 new ArrayList<>(),
                 persistedTeams,
                 null
@@ -101,9 +101,8 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public List<Tournament> getTournaments(GetTournamentsRequest getTournamentsRequest) {
-        Pageable pageable = PageRequest.of(getTournamentsRequest.getPage(), getTournamentsRequest.getSize());
-        //get active tournaments
-        return tournamentRepository.findAll(pageable).toList();
+    public List<Tournament> getTournaments(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return tournamentRepository.findTournamentsByWinnerIsNull(pageable);
     }
 }

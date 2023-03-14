@@ -11,15 +11,14 @@ import tournament.configuration.JwtService;
 import tournament.controller.authentication.AuthenticationRequest;
 import tournament.controller.authentication.AuthenticationResponse;
 import tournament.controller.authentication.RegisterRequest;
+import tournament.model.Token;
+import tournament.model.TokenType;
 import tournament.model.TournamentUser;
 import tournament.model.UserRole;
+import tournament.repository.TokenRepository;
 import tournament.repository.TournamentUserRepository;
 import tournament.service.helper.SecurityUser;
-import tournament.model.Token;
-import tournament.repository.TokenRepository;
-import tournament.model.TokenType;
 
-import java.time.Duration;
 import java.util.ArrayList;
 
 @Service
@@ -42,6 +41,9 @@ public class AuthenticationService {
         var user = TournamentUser.builder()
                 .id(0L)
                 .username(request.getUsername())
+                .email(request.getEmail())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .tournaments(new ArrayList<>())
                 .role(UserRole.ADMIN)
