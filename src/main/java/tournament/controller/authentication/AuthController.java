@@ -15,6 +15,7 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
+@CrossOrigin
 public class AuthController {
 
     private final AuthenticationService authService;
