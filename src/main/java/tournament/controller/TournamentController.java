@@ -40,6 +40,7 @@ public class TournamentController {
     public ResponseEntity<Long> createTournament(
             @RequestBody TournamentDTO tournamentDto
     ) {
+        log.info(tournamentDto.toString());
         return ResponseEntity.ok(tournamentService.createTournament(tournamentDto));
     }
 
