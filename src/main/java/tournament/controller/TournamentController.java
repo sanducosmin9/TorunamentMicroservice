@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
-@CrossOrigin
 public class TournamentController {
 
     private final TournamentService tournamentService;
