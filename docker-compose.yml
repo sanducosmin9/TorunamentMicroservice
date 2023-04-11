@@ -30,6 +30,8 @@ services:
         - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     networks:
       springboot-postgres-net:
+    volumes:
+      - ./keystore.p12
 
 networks:
   springboot-postgres-net:
