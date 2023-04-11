@@ -29,6 +29,11 @@ public class TournamentController {
 
     private final TournamentUserDTOMapper tournamentUserDTOMapper;
 
+    @GetMapping("/alive")
+    public boolean isAlive() {
+        return true;
+    }
+
     @GetMapping("/users/{username}")
     public ResponseEntity<TournamentUserDTO> getTournamentsByUsername(@PathVariable String username) {
         return ResponseEntity.ok(
