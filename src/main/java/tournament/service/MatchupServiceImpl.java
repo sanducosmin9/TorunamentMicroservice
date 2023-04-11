@@ -13,6 +13,7 @@ import tournament.repository.MatchupRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
@@ -28,20 +29,15 @@ public class MatchupServiceImpl implements MatchupService {
         var matchups = tournament.getMatchups();
         var teams = tournament.getTeams();
         int numberOfMatchups = teams.size() - 1;
-        int matchupNumber = teams.size() / 2;
-        int roundNumber = 1;
         matchups.addAll(createFirstRoundMatchups(tournament));
-        for (int i = matchupNumber, j = matchupNumber; i < numberOfMatchups; i++, j--) {
-            if (j == matchupNumber) {
+        int roundNumber = 1;
+        int matchupNumber = teams.size() / 2;
+        for (int i = matchupNumber; i < numberOfMatchups; i++) {
+            if (i % matchupNumber == 0) {
                 roundNumber++;
                 matchupNumber /= 2;
             }
-            Matchup matchup = new Matchup(
-                    0L,
-                    tournament,
-                    roundNumber,
-                    i
-            );
+            Matchup matchup = new Matchup(0L, tournament, roundNumber, i);
             var persistedMatchup = matchupRepository.save(matchup);
             matchups.add(persistedMatchup);
         }
@@ -52,17 +48,14 @@ public class MatchupServiceImpl implements MatchupService {
         Collections.shuffle(teams);
         List<Matchup> firstRoundMatchups = new ArrayList<>();
         for (int i = 0; i < teams.size() / 2; i++) {
-            Matchup matchup = new Matchup(
-                    0L,
-                    teams.get(i * 2),
-                    teams.get(i * 2 + 1),
-                    null,
-                    null,
-                    tournament,
-                    false,
-                    1,
-                    i
-            );
+            Matchup matchup = Matchup.builder()
+                    .team1(teams.get(i*2))
+                    .team2(teams.get(i*2+1))
+                    .tournament(tournament)
+                    .hasEnded(false)
+                    .round(1)
+                    .matchupNumber(i)
+                    .build();
             var persistedMatchup = matchupRepository.save(matchup);
             teams.get(i * 2).setActiveMatchup(persistedMatchup);
             teams.get(i * 2 + 1).setActiveMatchup(persistedMatchup);

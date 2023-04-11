@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Table(name = "TOURNAMENT")
@@ -43,7 +44,7 @@ public class Tournament {
     @OneToMany(mappedBy = "tournament")
     @JsonManagedReference
     @OrderBy("matchupNumber")
-    private List<Matchup> matchups;
+    private List<Matchup> matchups = new ArrayList<>();
 
     @OneToMany(mappedBy = "tournament")
     @JsonManagedReference
@@ -52,5 +53,5 @@ public class Tournament {
     @OneToOne
     @JoinColumn
     @Nullable
-    private Team winner;
+    private Team winner = null;
 }
