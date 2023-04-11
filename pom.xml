@@ -14,7 +14,7 @@
     <name>TournamentMicroservice</name>
     <description>TournamentMicroservice</description>
     <properties>
-        <java.version>19</java.version>
+        <java.version>17</java.version>
         <flyway.version>9.15.1</flyway.version>
         <jpa.version>3.0.3</jpa.version>
         <assertj.version>3.24.2</assertj.version>
