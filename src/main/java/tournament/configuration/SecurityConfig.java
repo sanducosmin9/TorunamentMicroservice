@@ -33,7 +33,7 @@ public class SecurityConfig {
             .requestMatchers(HttpMethod.GET, "/tournaments", "/tournament/**")
             .permitAll()
             .anyRequest()
-            .authenticated()
+            .permitAll()
             .and()
             .sessionManagement()
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

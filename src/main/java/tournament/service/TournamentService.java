@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface TournamentService {
 
-    Long createTournament(TournamentDTO tournamentDTO);
+    Long createSingleEliminationTournament(TournamentDTO tournamentDTO);
+
+    Long createRoundRobinTournament(TournamentDTO tournamentDTO);
 
     Long updateMatchup(MatchupUpdateRequest request);
 

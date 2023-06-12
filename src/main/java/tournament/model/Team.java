@@ -29,4 +29,9 @@ public class Team {
     @Nullable
     @JoinColumn
     private Matchup activeMatchup;
+
+    @OneToOne
+    @Nullable
+    @JoinColumn(name = "scoreboard_id")
+    private Scoreboard scoreboard;
 }

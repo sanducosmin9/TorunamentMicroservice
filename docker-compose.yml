@@ -15,23 +15,5 @@ services:
     networks:
       springboot-postgres-net:
 
-  server:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - '443:443'
-    depends_on:
-      - postgres
-    environment:
-        - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/tournament-db
-        - SPRING_DATASOURCE_USERNAME=postgres
-        - SPRING_DATASOURCE_PASSWORD=postgres
-        - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-    networks:
-      springboot-postgres-net:
-    volumes:
-      - ./keystore.p12
-
 networks:
   springboot-postgres-net:

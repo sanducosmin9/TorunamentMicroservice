@@ -13,7 +13,6 @@ import tournament.repository.MatchupRepository;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 @Slf4j
@@ -25,7 +24,7 @@ public class MatchupServiceImpl implements MatchupService {
 
     @Override
     @Transactional
-    public void createAllMatchups(Tournament tournament) {
+    public void createSingleEliminationMatchups(Tournament tournament) {
         var matchups = tournament.getMatchups();
         var teams = tournament.getTeams();
         int numberOfMatchups = teams.size() - 1;
@@ -40,6 +39,35 @@ public class MatchupServiceImpl implements MatchupService {
             Matchup matchup = new Matchup(0L, tournament, roundNumber, i);
             var persistedMatchup = matchupRepository.save(matchup);
             matchups.add(persistedMatchup);
+        }
+    }
+
+    @Override
+    public void createRoundRobinMatchups(Tournament tournament) {
+        var matchups = tournament.getMatchups();
+        var teams = tournament.getTeams();
+        Collections.shuffle(teams);
+        List<Integer> teamIndices = new ArrayList<>();
+        for (int i = 0; i < teams.size(); i++) {
+            teamIndices.add(i);
+        }
+        int numberOfRounds = teams.size() - 1;
+        for(int round = 0; round < numberOfRounds; round++) {
+            for(int i = 0; i < teams.size() / 2; i++) {
+                var team1Index = teamIndices.get(i);
+                var team2Index = teamIndices.get(teams.size() - 1 - i);
+
+                Matchup matchup = new Matchup();
+                matchup.setTournament(tournament);
+                matchup.setMatchupNumber(round + 1);
+                matchup.setTeam1(teams.get(team1Index));
+                matchup.setTeam2(teams.get(team2Index));
+                matchup.setRound(round + 1);
+                var persistedMatchup = matchupRepository.save(matchup);
+                matchups.add(persistedMatchup);
+            }
+            teamIndices.add(1, teamIndices.get(teamIndices.size() - 1));
+            teamIndices.remove(teamIndices.size() - 1);
         }
     }
 

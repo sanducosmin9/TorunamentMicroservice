@@ -5,7 +5,9 @@ import tournament.model.Team;
 import tournament.model.Tournament;
 
 public interface MatchupService {
-    void createAllMatchups(Tournament tournament);
+    void createSingleEliminationMatchups(Tournament tournament);
+
+    void createRoundRobinMatchups(Tournament tournament);
 
     Matchup getMatchup(Long matchupId);
 

@@ -16,6 +16,8 @@ public class TournamentDTOMapper implements Function<Tournament, TournamentDTO> 
 
     private final MatchupDTOMapper matchupDTOMapper;
 
+    private final ScoreboardDTOMapper scoreboardDTOMapper;
+
     @Override
     public TournamentDTO apply(Tournament tournament) {
         return new TournamentDTO(
@@ -31,7 +33,10 @@ public class TournamentDTOMapper implements Function<Tournament, TournamentDTO> 
                         .map(it -> new TeamDTO(it.getId(), it.getName()))
                         .collect(Collectors.toList()),
                 tournament.getWinner() == null ? null
-                        : new TeamDTO(tournament.getWinner().getId(), tournament.getWinner().getName())
+                        : new TeamDTO(tournament.getWinner().getId(), tournament.getWinner().getName()),
+                tournament.getScoreboard().stream()
+                        .map(scoreboardDTOMapper)
+                        .collect(Collectors.toList())
         );
     }
 }

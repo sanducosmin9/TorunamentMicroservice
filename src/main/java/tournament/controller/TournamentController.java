@@ -41,12 +41,20 @@ public class TournamentController {
         );
     }
 
-    @PostMapping("/tournaments")
-    public ResponseEntity<Long> createTournament(
+    @PostMapping("/tournaments/single-elimination")
+    public ResponseEntity<Long> createSingleEliminationTournament(
             @RequestBody TournamentDTO tournamentDto
     ) {
         log.info(tournamentDto.toString());
-        return ResponseEntity.ok(tournamentService.createTournament(tournamentDto));
+        return ResponseEntity.ok(tournamentService.createSingleEliminationTournament(tournamentDto));
+    }
+
+    @PostMapping("/tournaments/round-robin")
+    public ResponseEntity<Long> createRoundRobinTournament(
+            @RequestBody TournamentDTO tournamentDto
+    ) {
+        log.info(tournamentDto.toString());
+        return ResponseEntity.ok(tournamentService.createRoundRobinTournament(tournamentDto));
     }
 
     @GetMapping("/tournament/{id}")
@@ -71,10 +79,12 @@ public class TournamentController {
     }
 
     @PutMapping("/tournaments")
-    public ResponseEntity<Long> updateMatchup(
+    public ResponseEntity<Long> updateSingleEliminationMatchup(
             @RequestBody MatchupUpdateRequest matchupUpdateRequest
     ) {
         return ResponseEntity.ok(tournamentService.updateMatchup(matchupUpdateRequest));
     }
+
+
 
 }

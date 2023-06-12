@@ -54,4 +54,10 @@ public class Tournament {
     @JoinColumn
     @Nullable
     private Team winner = null;
+
+    @OneToMany(mappedBy = "tournament")
+    @JsonManagedReference
+    @Nullable
+    private List<Scoreboard> scoreboard;
+
 }
