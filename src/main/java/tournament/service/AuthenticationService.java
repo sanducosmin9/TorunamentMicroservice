@@ -69,7 +69,7 @@ public class AuthenticationService {
                         "User with username " + request.getUsername() + " was not found")
                 );
         var jwtToken = jwtService.generateToken(new SecurityUser(user));
-        revokeAllUserTokens(user);
+//        revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
