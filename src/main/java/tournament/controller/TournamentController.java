@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import tournament.dto.MatchupUpdateRequest;
 import tournament.dto.TournamentDTO;
 import tournament.dto.TournamentUserDTO;
+import tournament.dto.TournamentsDTO;
 import tournament.dto.mapper.TournamentDTOMapper;
 import tournament.dto.mapper.TournamentUserDTOMapper;
 import tournament.service.TournamentService;
@@ -41,20 +42,16 @@ public class TournamentController {
         );
     }
 
-    @PostMapping("/tournaments/single-elimination")
+    @PostMapping("/tournaments")
     public ResponseEntity<Long> createSingleEliminationTournament(
             @RequestBody TournamentDTO tournamentDto
     ) {
-        log.info(tournamentDto.toString());
-        return ResponseEntity.ok(tournamentService.createSingleEliminationTournament(tournamentDto));
-    }
-
-    @PostMapping("/tournaments/round-robin")
-    public ResponseEntity<Long> createRoundRobinTournament(
-            @RequestBody TournamentDTO tournamentDto
-    ) {
-        log.info(tournamentDto.toString());
-        return ResponseEntity.ok(tournamentService.createRoundRobinTournament(tournamentDto));
+        if(tournamentDto.getType().equals("robin")) {
+            return ResponseEntity.ok(tournamentService.createRoundRobinTournament(tournamentDto));
+        } else if(tournamentDto.getType().equals("single")) {
+            return ResponseEntity.ok(tournamentService.createSingleEliminationTournament(tournamentDto));
+        }
+        return ResponseEntity.ok(0L);
     }
 
     @GetMapping("/tournament/{id}")
@@ -66,15 +63,18 @@ public class TournamentController {
     }
 
     @GetMapping("/tournaments")
-    public ResponseEntity<List<TournamentDTO>> getTournaments(
+    public ResponseEntity<TournamentsDTO> getTournaments(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        var tournaments = tournamentService.getTournaments(page, size);
+        var tournaments = tournamentService.getTournaments(page - 1, size);
         return ResponseEntity.ok(
-                tournaments.stream()
-                        .map(tournamentDTOMapper)
-                        .collect(Collectors.toList())
+                new TournamentsDTO(
+                        tournaments.stream()
+                                .map(tournamentDTOMapper)
+                                .collect(Collectors.toList()),
+                        tournamentService.getNumberOfTournaments()
+                )
         );
     }
 

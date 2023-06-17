@@ -15,5 +15,18 @@ services:
     networks:
       springboot-postgres-net:
 
+  postgres-web:
+    image: postgres:alpine3.17
+    container_name: CroG
+    restart: always
+    environment:
+      POSTGRES_DB: CroG
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '5436:5432'
+    networks:
+      springboot-postgres-net:
+
 networks:
   springboot-postgres-net:

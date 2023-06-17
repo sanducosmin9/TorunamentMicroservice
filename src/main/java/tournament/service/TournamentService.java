@@ -17,4 +17,6 @@ public interface TournamentService {
     Tournament getTournament(Long tournamentId);
 
     List<Tournament> getTournaments(int page, int size);
+
+    Long getNumberOfTournaments();
 }

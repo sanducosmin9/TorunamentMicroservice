@@ -166,4 +166,9 @@ public class TournamentServiceImpl implements TournamentService {
         Pageable pageable = PageRequest.of(page, size);
         return tournamentRepository.findTournamentsByWinnerIsNull(pageable);
     }
+
+    @Override
+    public Long getNumberOfTournaments() {
+        return (long) tournamentRepository.findAll().size();
+    }
 }

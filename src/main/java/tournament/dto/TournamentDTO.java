@@ -20,5 +20,6 @@ public class TournamentDTO {
     private Map<Integer, List<MatchupDTO>> matchups;
     private List<TeamDTO> teams;
     private TeamDTO winner;
-    private List<ScoreboardDTO> scoreboard;
+    private List<ScoreboardDTO> scoreboard = null;
+    private String type;
 }

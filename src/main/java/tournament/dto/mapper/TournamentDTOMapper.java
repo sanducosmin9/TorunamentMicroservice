@@ -36,7 +36,8 @@ public class TournamentDTOMapper implements Function<Tournament, TournamentDTO> 
                         : new TeamDTO(tournament.getWinner().getId(), tournament.getWinner().getName()),
                 tournament.getScoreboard().stream()
                         .map(scoreboardDTOMapper)
-                        .collect(Collectors.toList())
+                        .collect(Collectors.toList()),
+                ""
         );
     }
 }
